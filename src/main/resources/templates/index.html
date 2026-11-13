@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ca" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gestor de tasques · Entorns de desenvolupament</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+    <header th:replace="~{fragments :: capcalera}"></header>
+
+    <main class="page">
+        <section class="hero">
+            <h1>Gestor de tasques</h1>
+            <p class="lead">Apunta el que tens pendent i marca les tasques a mesura que les vas acabant.</p>
+        </section>
+
+        <div id="errormessages" th:if="${errorMessage}" class="flash-message" role="alert">
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <form id="crear_tasca" class="card" th:action="@{/tasques}" method="post">
+            <h2>Nova tasca</h2>
+            <label for="descripcio">Introdueix una descripció per la tasca:</label>
+            <div class="input-row">
+                <input type="text" id="descripcio" name="descripcio" placeholder="Per exemple: Acabar la Pràctica 3" autofocus>
+                <button type="submit">
+                    Crear tasca
+                </button>
+            </div>
+            <a class="link" th:href="@{/tasques}">Veure tasques &rarr;</a>
+        </form>
+    </main>
+
+    <footer th:replace="~{fragments :: peu}"></footer>
+</body>
+</html>

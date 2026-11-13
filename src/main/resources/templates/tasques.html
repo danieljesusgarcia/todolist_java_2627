@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ca" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Llista de Tasques · Entorns de desenvolupament</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+    <header th:replace="~{fragments :: capcalera}"></header>
+
+    <main class="page wide"
+          th:with="total=${#lists.size(tasques)}, fetes=${#lists.size(tasques.?[completada])}, pendents=${total - fetes}, percentatge=${total == 0 ? 0 : (fetes * 100) / total}">
+        <section class="page-head">
+            <h1>Llista de tasques</h1>
+            <a class="button-link" th:href="@{/}">Nova tasca</a>
+        </section>
+
+        <div id="errormessages" th:if="${errorMessage}" class="flash-message" role="alert">
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <section class="summary">
+            <p>
+                <span th:text="${total}">0</span> tasques &middot;
+                <span th:text="${pendents}">0</span> pendents &middot;
+                <span th:text="${fetes}">0</span> completades
+                <span class="percent" th:text="'(' + ${percentatge} + '%)'">(0%)</span>
+            </p>
+            <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" th:attr="aria-valuenow=${percentatge}">
+                <div class="progress-bar" th:style="'width:' + ${percentatge} + '%'"></div>
+            </div>
+        </section>
+
+        <ul id="llista_tasques" class="tasks" th:if="${total > 0}">
+            <li class="task" th:each="tasca : ${tasques}" th:classappend="${tasca.completada} ? 'is-done'">
+                <span class="check" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+                </span>
+                <div class="task-body">
+                    <span class="task-title" th:text="${tasca.descripcio}"></span>
+                    <span class="status" th:classappend="${tasca.completada} ? 'status-done' : 'status-pending'"
+                          th:text="${tasca.completada ? 'Completada' : 'Pendent'}"></span>
+                </div>
+                <div class="task-actions">
+                    <form th:action="@{/tasques/update/{descripcio}(descripcio=${tasca.descripcio})}" method="post">
+                        <button type="submit" class="btn-complete" th:disabled="${tasca.completada}">
+                            Marcar Completada
+                        </button>
+                    </form>
+                    <form th:action="@{/tasques/delete/{descripcio}(descripcio=${tasca.descripcio})}" method="post">
+                        <button type="submit" class="btn-delete">
+                            Eliminar
+                        </button>
+                    </form>
+                </div>
+            </li>
+        </ul>
+
+        <section class="empty card" th:if="${total == 0}">
+            <h2>Encara no tens cap tasca</h2>
+            <p>Comença afegint la primera i veuràs aquí el teu progrés.</p>
+            <a class="button-link" th:href="@{/}">Crear la primera tasca</a>
+        </section>
+
+        <a class="link" th:href="@{/}">&larr; Tornar a l'inici</a>
+    </main>
+
+    <footer th:replace="~{fragments :: peu}"></footer>
+</body>
+</html>
